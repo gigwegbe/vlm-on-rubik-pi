@@ -1,6 +1,6 @@
 llama-server \
-  -m ./LFM2-VL-1.6B-Q4_0.gguf \
-  --mmproj ./mmproj-LFM2-VL-1.6B-F16.gguf \
+  -m ./LFM2.5-VL-1.6B-Q4_0.gguf \
+  --mmproj ./mmproj-LFM2.5-VL-1.6B-F16.gguf \
   -b 4 \
   -c 1024 \
   --threads 6 \

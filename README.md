@@ -36,7 +36,7 @@ Download the required model from Hugging Face (replace with the correct reposito
 
   ```
   hf download LiquidAI/LFM2.5-VL-1.6B-GGUF LFM2.5-VL-1.6B-Q4_0.gguf  --local-dir .
-  hf download LiquidAI/LFM2.5-VL-1.6B-GGUF mmproj-LFM2.5-VL-1.6B-F16.gguf --local-dir .
+  hf download LiquidAI/LFM2.5-VL-1.6B-GGUF mmproj-LFM2.5-VL-1.6b-F16.gguf --local-dir .
   ```
 
 ## 4. Start the Inference Engine
