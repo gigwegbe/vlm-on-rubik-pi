@@ -50,7 +50,7 @@ Launch the llama.cpp inference server:
 Make sure the script has execution permission:
 
   ```
-    chmod +x start_llama.cpp
+chmod +x start_llama.cpp
   ```
 
 ## 5. Start the Application
