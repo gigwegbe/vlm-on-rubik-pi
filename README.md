@@ -25,8 +25,18 @@ Install the required Python packages:
 
 Download the required model from Hugging Face (replace with the correct repository):
 
+- LFM2 Model
+
   ```
-  hfdownload <model-repository>
+  hf download LiquidAI/LFM2-VL-1.6B-GGUF LFM2-VL-1.6B-Q4_0.gguf  --local-dir .
+  hf download LiquidAI/LFM2-VL-1.6B-GGUF mmproj-LFM2-VL-1.6B-F16.gguf --local-dir .
+  ```
+
+- LFM2.5 Model
+
+  ```
+  hf download LiquidAI/LFM2.5-VL-1.6B-GGUF LFM2.5-VL-1.6B-Q4_0.gguf  --local-dir .
+  hf download LiquidAI/LFM2.5-VL-1.6B-GGUF mmproj-LFM2.5-VL-1.6B-F16.gguf --local-dir .
   ```
 
 ## 4. Start the Inference Engine
@@ -34,7 +44,7 @@ Download the required model from Hugging Face (replace with the correct reposito
 Launch the llama.cpp inference server:
 
   ```
-    ./start_llama.cpp
+./start_llama.cpp
   ```
 
 Make sure the script has execution permission:
@@ -46,5 +56,5 @@ Make sure the script has execution permission:
 ## 5. Start the Application
 
   ```
-  python3 app.py   
+  python3 app.py
   ```

@@ -2,3 +2,4 @@ flask
 flask-cors
 request 
 pillow
+huggingface-hub
