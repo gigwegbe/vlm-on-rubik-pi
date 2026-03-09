@@ -338,7 +338,7 @@ CLIENT_HTML = '''
             eventSource = new EventSource('/stream');
 
             eventSource.onopen = () => {
-                updateConnectionStatus('connected', 'Connected – streaming every 10 s');
+                updateConnectionStatus('connected', 'Connected – streaming every 60 s');
                 clearError();
             };
 
@@ -351,9 +351,7 @@ CLIENT_HTML = '''
                         imageContainer.style.display = 'block';
                         streamedImage.src = `data:image/jpeg;base64,${data.image}`;
                         const ts = new Date(data.timestamp * 1000).toLocaleTimeString();
-                        imageInfo.innerHTML = `<strong>File:</strong> ${data.filename}<br>
-                                               <strong>Image:</strong> ${data.index} of ${data.total}<br>
-                                               <strong>Time:</strong> ${ts}`;
+                        imageInfo.innerHTML = `<strong>Time:</strong> ${ts}`;
                         displayVLMAnalysis(data.vlm_analysis);
                     }
                 } catch (err) { showError(`Error parsing data: ${err.message}`); }
