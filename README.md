@@ -1,1 +1,1 @@
-# vlm-on-rubik-pi
+# Visual Language Model on Rubik-pi
