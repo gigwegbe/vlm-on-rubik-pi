@@ -1,5 +1,9 @@
 # Visual Language Model on Rubik-Pi
 
+## 0. Install Llama.cpp
+
+Make sure you have installed llama.cpp on Rubik-Pi using this guide - [Link](https://www.thundercomm.com/rubik-pi-3/en/docs/rubik-pi-3-user-manual/1.0.0-u/Application%20Development%20and%20Execution%20Guide/Framework-Driven%20AI%20Sample%20Execution/llama_cpp/)
+
 ## 1. Create a Python Virtual Environment
 
 Create and activate a virtual environment:
