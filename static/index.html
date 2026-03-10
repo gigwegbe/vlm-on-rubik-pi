@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rubik-Pi Vision Dashboard</title>
+
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
+            margin: 0;
+            background: #f4f6f9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 60px;
+        }
+
+        .title-group h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .status {
+            background: #e8f5e8;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4CAF50;
+            font-size: 14px;
+        }
+
+        .connection-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .connected {
+            background: #4CAF50;
+        }
+
+        .disconnected {
+            background: #f44336;
+        }
+
+        .connecting {
+            background: #ff9800;
+        }
+
+        .image-container {
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 550px;
+            border-radius: 6px;
+        }
+
+        .image-info {
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .vlm-analysis {
+            margin-top: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .vlm-analysis h3 {
+            margin-top: 0;
+        }
+
+        .gauge-readings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .gauge-item {
+            padding: 15px;
+            border-radius: 6px;
+            background: #f9fafb;
+            border-left: 5px solid #007bff;
+        }
+
+        .gauge-label {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .gauge-value {
+            font-size: 22px;
+            margin-top: 5px;
+        }
+
+        .processing-time {
+            margin-top: 12px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            font-size: 18px;
+        }
+
+        .error {
+            background: #ffe8e8;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 5px solid #f44336;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <img src="/static/images.png" class="logo">
+
+            <div class="title-group">
+                <h1>Rubik-Pi Vision Dashboard</h1>
+                <p class="subtitle">Real-time Gauge Monitoring with On-Device Vision AI</p>
+            </div>
+
+        </header>
+
+        <div class="status">
+            <span class="connection-status connecting" id="connectionStatus"></span>
+            <span id="statusText">Connecting to stream...</span>
+        </div>
+
+        <div id="errorContainer"></div>
+
+        <div class="loading" id="loadingMessage">
+            Waiting for images from server...
+        </div>
+
+        <div class="image-container" id="imageContainer" style="display:none">
+
+            <img id="streamedImage" src="" alt="Streamed Image">
+
+            <div class="image-info" id="imageInfo"></div>
+
+        </div>
+
+        <div class="vlm-analysis">
+
+            <h3>Gauge Analysis from Vision Language Model:</h3>
+
+            <div id="vlmContent">
+                <p>Processing image with VLM...</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const statusElement = document.getElementById('statusText')
+        const connectionStatus = document.getElementById('connectionStatus')
+        const errorContainer = document.getElementById('errorContainer')
+        const loadingMessage = document.getElementById('loadingMessage')
+        const imageContainer = document.getElementById('imageContainer')
+        const streamedImage = document.getElementById('streamedImage')
+        const imageInfo = document.getElementById('imageInfo')
+        const vlmContent = document.getElementById('vlmContent')
+
+        let reconnectTimeout = null
+
+        function updateConnectionStatus(status, message) {
+            statusElement.textContent = message
+            connectionStatus.className = 'connection-status ' + status
+        }
+
+        function showError(msg) {
+            errorContainer.innerHTML = `<div class="error">${msg}</div>`
+        }
+
+        function clearError() {
+            errorContainer.innerHTML = ''
+        }
+
+        function displayVLMAnalysis(vlmData) {
+
+            if (!vlmData) {
+                vlmContent.innerHTML = '<p>No VLM analysis</p>'
+                return
+            }
+
+            const readings = vlmData.gauge_readings ? vlmData.gauge_readings : vlmData
+
+            const config = [
+                { key: 'rain_gauge', label: 'Rain Gauge', unit: 'mm', color: '#28a745' },
+                { key: 'thermometer', label: 'Temperature', unit: '°C', color: '#dc3545' },
+                { key: 'pressure_gauge', label: 'Pressure', unit: 'bar', color: '#007bff' }
+            ]
+
+            let html = '<div class="gauge-readings">'
+
+            config.forEach(g => {
+                const v = readings[g.key]
+                const val = v !== undefined && v !== null ? `${v} ${g.unit}` : 'Not detected'
+
+                html += `
+<div class="gauge-item" style="border-left-color:${g.color}">
+<div class="gauge-label">${g.label}</div>
+<div class="gauge-value" style="color:${g.color}">
+${val}
+</div>
+</div>`
+            })
+
+            html += '</div>'
+
+            vlmContent.innerHTML = html
+        }
+
+        function connectToStream() {
+
+            if (window.stream && window.stream.readyState !== EventSource.CLOSED) {
+                console.log("SSE already active")
+                return
+            }
+
+            updateConnectionStatus('connecting', 'Connecting to stream...')
+
+            window.stream = new EventSource('/stream')
+
+            window.stream.onopen = () => {
+                updateConnectionStatus('connected', 'Connected – streaming every 60s')
+                clearError()
+            }
+
+            window.stream.onmessage = (event) => {
+
+                try {
+
+                    const data = JSON.parse(event.data)
+
+                    if (data.error) {
+                        showError(data.error)
+                        return
+                    }
+
+                    if (data.image) {
+
+                        loadingMessage.style.display = 'none'
+                        imageContainer.style.display = 'block'
+
+                        streamedImage.src = `data:image/jpeg;base64,${data.image}`
+
+                        const ts = new Date(data.timestamp * 1000).toLocaleTimeString()
+
+                        imageInfo.innerHTML = `<strong>Time:</strong> ${ts}`
+
+                        displayVLMAnalysis(data.vlm_analysis || data.vlm)
+
+                    }
+
+                } catch (err) {
+
+                    showError(err.message)
+
+                }
+
+            }
+
+            window.stream.onerror = () => {
+
+                updateConnectionStatus('disconnected', 'Connection lost – reconnecting...')
+
+                if (window.stream) {
+                    window.stream.close()
+                }
+
+                clearTimeout(reconnectTimeout)
+
+                reconnectTimeout = setTimeout(() => {
+                    connectToStream()
+                }, 5000)
+
+            }
+
+        }
+
+        window.addEventListener('load', connectToStream)
+
+        window.addEventListener('beforeunload', () => {
+            if (window.stream) {
+                window.stream.close()
+            }
+            clearTimeout(reconnectTimeout)
+        })
+
+    </script>
+
+</body>
+
+</html>
