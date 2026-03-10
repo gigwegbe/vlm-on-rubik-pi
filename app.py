@@ -557,7 +557,7 @@ Waiting for images from server...
 
 <div class="vlm-analysis" id="vlmAnalysis">
 
-<h3>🔎 Gauge Analysis</h3>
+<h3>🔎 Gauge Analysis from Vision Language Model:</h3>
 
 <div id="vlmContent">
 <p>Processing image with VLM...</p>
