@@ -1,6 +1,6 @@
 # Visual Language Model on Rubik-Pi
 
-![Dashboard](assets/homepage-dashboard.png)
+![Dashboard](assets/short-clip.)
 
 ## 0. Install Llama.cpp
 
