@@ -46,13 +46,13 @@ Download the required model from Hugging Face (replace with the correct reposito
 Launch the llama.cpp inference server:
 
   ```
-./start_llama.cpp
+./start.sh
   ```
 
 Make sure the script has execution permission:
 
   ```
-chmod +x start_llama.cpp
+chmod +x start.sh
   ```
 
 ## 5. Start the Application
