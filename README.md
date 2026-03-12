@@ -60,3 +60,12 @@ chmod +x start_llama.cpp
   ```
   python3 app.py
   ```
+
+## Metrics
+
+| Metric        | Reading   |
+|---------------|-----------|
+| Prompt speed  | ~19 tok/s |
+| Generation    | ~6 tok/s  |
+| Image encode  | ~21 s     |
+| Total time    | ~31.6 s   |
